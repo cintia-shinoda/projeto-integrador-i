@@ -2,14 +2,26 @@ import { useForm } from 'react-hook-form';
 import { FaFacebook } from "react-icons/fa";
 import { FaLinkedin } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
+import axios from 'axios';
 
 function App() {
-  const { register, handleSubmit, setError, formState: { errors }} = useForm();
+  const { register, handleSubmit, setError, reset, formState: { errors }} = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
-    setError();
-  };
+  const onSubmit = async (data) => {
+      
+    axios.post('http://localhost:8000/api/trezentos/', data)
+      .then(() => {
+        console.log( 'Deu certo')
+        alert('Dados Enviado com sucesso, aguarde nosso contato!');
+        
+        reset();
+      })
+      .catch(() => {
+        console.log('Erro ao enviar requisição');
+        setError()
+      })
+
+  }
 
   return (
     <>
@@ -41,12 +53,12 @@ function App() {
             <p className="text-2xl">Torne-se um dos nossos 300 sócios colaboradores! Cadastre-se agora e seja mais um pilar de força da nossa comunidade.</p>
             
             <div className="flex flex-col gap-1 w-full">
-              <input {...register("name", {required: { value: true, message: '*Preencha o seu nome'}})} 
+              <input {...register("nome", {required: { value: true, message: '*Preencha o seu nome'}})} 
                 placeholder="Seu nome"
                 className="text-slate-900 p-2"
                 
               />
-            {errors.name && <p className='text-red-600 text-sm'>{errors.name.message}</p>}
+            {errors.nome && <p className='text-red-600 text-sm'>{errors.nome.message}</p>}
 
             </div>
             
@@ -64,24 +76,23 @@ function App() {
             
             
             <div className="flex flex-col gap-1 w-full">
-              <input {...register("tel", 
+              <input {...register("whatsapp", 
                 { required: { value: true, message: '*Preencha o número de telefone'},
-                  pattern: { value: /\([1-9]{2}\) [9]{0,1}[6-9]{1}[0-9]{3}-[0-9]{4}$/, message: 'Telefone inválido' }
+                  pattern: { value: /^(?:[0-9] ?){6,14}[0-9]$/, message: 'Telefone inválido' }
                 })} 
                 type='tel'
                 placeholder="DDD + WhatsApp"
                 className="text-slate-900 p-2"
               />
 
-              {errors.tel && <p className='text-red-600 text-sm'>{errors.tel.message}</p>}
+              {errors.whatsapp && <p className='text-red-600 text-sm'>{errors.whatsapp.message}</p>}
             </div>
 
-            <button type="submit" className="mt-8 uppercase text-[#F8A41C] w-1/2 bg-black p-2 hover:bg-slate-900 transition-all">
+            <button type='submit' className="mt-8 uppercase text-[#F8A41C] w-1/2 bg-black p-2 hover:bg-slate-900 transition-all">
               Cadastrar
             </button>
           </form>
         </div>
-        
       </main>
 
       <section className=" text-slate-950 justify-center items-center flex flex-col p-8 gap-2">
@@ -115,7 +126,9 @@ function App() {
 
         <ul className='text-lg'>
           <li className='font-bold'>Unidade Cajamar (Matriz)</li>
+          
           <li>Telefone: 11 99791-6001</li>
+          
           <li>Email: atendimento@sitioagar.com.br</li>
         </ul>
         
